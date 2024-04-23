@@ -1,0 +1,112 @@
+@startuml
+!theme cerulean
+
+skinparam backgroundColor #FFFFFF
+
+box "Cập nhật thông tin tài khoản" #White
+	actor "Người dùng/Quản trị viên" as user
+	participant frm_TrangChu as homepage
+	participant frm_QuanLyTaiKhoan as account_management
+	participant frm_CapNhatThongTinTaiKhoan as update_user
+	participant ctrl_TaiKhoan as ctrl_user
+	participant ent_TaiKhoan as ent_user
+
+	user -> homepage: Thực hiện "Đăng nhập" và chọn "Quản lý tài khoản"
+	
+	activate user
+	activate homepage
+
+	homepage -> account_management: create
+	activate account_management
+
+	deactivate homepage
+
+	deactivate account_management
+	
+	account_management --> user: Hiển thị giao diện và yêu cầu chọn tính năng
+
+	activate account_management
+
+	user -> account_management: Bấm "Cập nhật thông tin tài khoản"
+	
+	account_management -> update_user: create
+
+	activate update_user
+
+	deactivate account_management
+
+	update_user --> user: Hiển thị giao diện và yêu cầu nhập thông tin cần cập nhật
+	
+	user -> update_user: Nhập thông tin và bấm "Cập nhật"
+
+	update_user --> user: Yêu cầu xác nhận
+
+	deactivate update_user
+
+	deactivate user
+
+	alt NO
+		update_user -> account_management: Hủy cập nhật
+
+		activate account_management
+		deactivate account_management
+	else YES
+		update_user -> ctrl_user: Yêu cầu cập nhật(UserID, newUserInfo)
+
+		activate update_user
+		
+		deactivate update_user
+
+		activate ctrl_user
+
+		ctrl_user -> ent_user: Yêu cầu cập nhật(UserID, newUserInfo)
+
+		activate ent_user
+
+		ent_user -> ent_user: Kiểm tra trùng lặp thông tin(newUserInfo)
+
+		activate ent_user
+
+		alt YES
+			ent_user --> ctrl_user: Thông tin trùng lặp
+
+			ctrl_user --> update_user: Thông tin trùng lặp
+
+			update_user --> user: Lỗi thông tin trùng lặp
+
+			activate user
+			
+			deactivate user
+		else NO
+			ent_user -> ent_user: Cập nhật thông tin(UserID, newUserInfo)
+
+			activate ent_user
+
+			ent_user -> ent_user: Lưu thông tin cập nhật vào CSDL(UserID, newUserInfo)
+
+			activate ent_user
+
+			ent_user --> ctrl_user: Cập nhật thông tin thành công
+
+			ctrl_user --> account_management: Cập nhật thông tin thành công
+
+			activate account_management
+
+			account_management --> user: Cập nhật thông tin thành công
+
+			activate user
+
+			deactivate user
+
+			deactivate account_management
+
+		end
+
+		deactivate ctrl_user
+
+		deactivate ent_user
+	end
+end box
+
+@enduml
+

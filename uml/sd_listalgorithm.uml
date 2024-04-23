@@ -1,0 +1,56 @@
+@startuml
+
+!theme cerulean
+
+skinparam backgroundColor #FFFFFF
+
+box "Hiển thị danh sách thuật toán" #White
+	actor "Quản trị viên/Người dùng" as user
+	participant frm_TrangChu as homepage
+	participant frm_DanhSachThuatToan as list_algorithm
+	participant ctrl_ThuatToan as ctrl_algorithm
+	participant ent_ThuatToan as ent_algorithm
+	
+	user -> homepage: Thực hiện "Đăng nhập" và chọn "Xem danh sách thuật toán"
+	
+	activate user
+
+	activate homepage
+
+	homepage -> list_algorithm: create
+
+	activate list_algorithm
+
+	list_algorithm -> ctrl_algorithm: Lấy danh sách thuật toán
+
+	activate ctrl_algorithm
+
+	ctrl_algorithm -> ent_algorithm: Lấy danh sách thuật toán
+
+	activate ent_algorithm
+
+	ent_algorithm -> ent_algorithm: Lấy danh sách thuật toán trong CSDL
+
+	activate ent_algorithm
+
+	deactivate homepage
+
+	ent_algorithm --> ctrl_algorithm: Trả về danh sách thuật toán
+
+	ctrl_algorithm --> list_algorithm: Trả về danh sách thuật toán
+
+	list_algorithm --> user: Hiển thị danh sách thuật toán
+
+	deactivate ent_algorithm
+
+	deactivate ent_algorithm
+
+	deactivate list_algorithm
+
+	deactivate ctrl_algorithm
+
+	deactivate user
+end box
+
+@enduml
+

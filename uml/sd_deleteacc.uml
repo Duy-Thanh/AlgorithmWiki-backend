@@ -1,0 +1,70 @@
+@startuml
+
+!theme cerulean
+
+skinparam backgroundColor #FFFFFF
+
+box "Xóa tài khoản" #White
+	actor "Quản trị viên/Người dùng" as user
+	participant frm_DangNhap as login
+	participant frm_TrangChu as homepage
+	participant frm_QuanLyTaiKhoan as account_management
+	participant ctrl_TaiKhoan as ctrl_user
+	participant ent_TaiKhoan as ent_user
+
+	user -> homepage: Thực hiện "Đăng nhập" và chọn "Quản lý tài khoản"
+
+	activate user
+	activate homepage
+
+	homepage -> account_management: create
+
+	deactivate homepage
+
+	activate account_management
+
+	account_management --> user: Hiển thị giao diện và yêu cầu chọn tính năng
+
+	user -> account_management: Chọn "Xóa tài khoản"
+
+	alt NO
+		account_management -> account_management: Hiển thị trang "Quản lý tài khoản"
+	else YES
+		account_management -> ctrl_user: Yêu cầu xóa tài khoản(UserID)
+
+		activate ctrl_user
+
+		ctrl_user -> ent_user: Yêu cầu xóa tài khoản(UserID)
+
+		activate ent_user
+
+		ent_user -> ent_user: Xóa tài khoản(UserID)
+
+		activate ent_user
+
+		ent_user -> ent_user: Đăng xuất tài khoản(UserID)
+
+		activate ent_user
+
+		deactivate account_management
+
+		deactivate ctrl_user
+
+		ent_user --> login: create
+
+		activate login
+
+		login --> user: Xóa tài khoản thành công, quay lại màn hình đăng nhập
+
+		deactivate login
+
+		deactivate ent_user
+
+		deactivate ent_user
+
+		deactivate ent_user
+	end
+end box
+
+@enduml
+

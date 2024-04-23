@@ -1,0 +1,78 @@
+@startuml
+
+!theme cerulean
+
+skinparam backgroundColor #FFFFFF
+
+box "Tìm kiểm thuật toán" #White
+	actor "Quản trị viên/Người dùng" as user
+	participant frm_TrangChu as homepage
+	participant frm_KetQuaTimKiem as search_result
+	participant ctrl_ThuatToan as ctrl_algorithm
+	participant ent_ThuatToan as ent_algorithm
+
+	user -> homepage: Thực hiện "Đăng nhập" và bấm vào ô tìm kiếm sau đó tìm tên thuật toán
+
+	activate user
+	
+	activate homepage
+
+	homepage -> search_result: create(Tên thuật toán)
+
+	activate search_result
+
+	search_result -> ctrl_algorithm: Tìm kiếm thuật toán(Tên thuật toán)
+	
+	activate ctrl_algorithm
+
+	ctrl_algorithm -> ent_algorithm: Tìm kiếm thuật toán(Tên thuật toán)
+
+	activate ent_algorithm
+
+	ent_algorithm -> ent_algorithm: Tìm kiếm trong CSDL(Tên thuật toán)
+
+	activate ent_algorithm
+
+	deactivate homepage
+
+	alt NO
+		ent_algorithm --> ctrl_algorithm: Không tìm thấy thuật toán
+
+		ctrl_algorithm --> search_result: Không tìm thấy thuật toán
+
+		search_result --> user: Không tìm thấy thuật toán
+
+		deactivate ctrl_algorithm
+
+		deactivate search_result
+
+		deactivate user
+	else YES
+		ent_algorithm --> ctrl_algorithm: Trả về danh sách thuật toán đã tìm thấy
+
+		activate ctrl_algorithm
+
+		ctrl_algorithm --> search_result: Trả về danh sách thuật toán đã tìm thấy
+
+		activate search_result
+
+		search_result --> user: Hiển thị danh sách thuật toán đã tìm thấy
+
+		activate user
+
+		deactivate user
+
+		deactivate ent_algorithm
+
+		deactivate ent_algorithm
+
+		deactivate ent_algorithm
+
+		deactivate ctrl_algorithm
+
+		deactivate search_result
+	end
+
+end box
+
+@enduml

@@ -1,0 +1,112 @@
+@startuml
+!theme cerulean
+
+skinparam backgroundColor #FFFFFF
+
+box "Đăng ký tài khoản" #White
+	actor "Người dùng/Quản trị viên" as user
+	participant frm_TrangChu as homepage
+	participant frm_DangKy as register
+	participant ctrl_TaiKhoan as ctrl_user
+	participant ent_TaiKhoan as ent_user
+
+	/' Press sign up '/
+	user -> homepage: Bấm nút "Đăng ký"
+	activate user
+	activate homepage
+	
+	deactivate user
+
+	/' Create frm_Login '/
+	homepage -> register: create
+	activate register
+	deactivate register
+	
+	/' We are done with homepage '/
+	deactivate homepage
+
+	/' Display and require user input '/
+	register --> user: Hiển thị giao diện và yêu cầu người dùng nhập thông tin
+	
+	activate register
+	activate user
+
+	user -> register: Nhập thông tin và bấm xác nhận
+
+	deactivate register
+	deactivate user
+
+	/' User confirmation '/
+	alt NO
+		register -> homepage: Quay lại trang chủ
+		
+		activate register
+		activate homepage
+
+		deactivate register
+		deactivate homepage
+	else
+		register -> ctrl_user: Yêu cầu đăng ký(UserInfo)
+		
+		activate register
+		activate ctrl_user
+		
+		ctrl_user -> ent_user: Yêu cầu đăng ký(UserInfo)
+		
+		activate ent_user
+
+		ent_user -> ent_user: Kiểm tra thông tin đầy đủ(UserInfo)
+		activate ent_user
+
+		alt NO
+			ent_user --> ctrl_user: Thông tin không đầy đủ
+
+			ctrl_user --> register: Thông tin không đầy đủ
+
+			register --> user: Thông báo lỗi thông tin không đầy đủ
+			
+			activate user
+
+			deactivate user
+			deactivate register
+			deactivate ctrl_user
+		else
+			ent_user -> ent_user: Lưu thông tin vào cơ sở dữ liệu(UserInfo)
+			activate ent_user
+
+			ent_user -> ent_user: Tự động đăng nhập(UserInfo)
+			activate ent_user
+
+			ent_user -> ent_user: Lưu thông tin vào cookie(UserInfo)
+			activate ent_user
+			
+			ent_user -> ctrl_user: Đăng ký thành công, tự động đăng nhập thành công
+			
+			activate ctrl_user
+
+			ctrl_user -> homepage: Đăng ký thành công, tự động đăng nhập thành công
+			
+			activate homepage
+
+			homepage -> user: Đăng ký thành công, có thể sử dụng ngay vì đã tự động đăng nhập
+			
+			activate user
+			deactivate user
+
+			deactivate ctrl_user
+			deactivate homepage
+			deactivate ent_user
+		end
+
+		deactivate ent_user
+
+		deactivate ent_user
+
+		deactivate ent_user
+
+		deactivate ent_user
+	end
+end box
+
+@enduml
+

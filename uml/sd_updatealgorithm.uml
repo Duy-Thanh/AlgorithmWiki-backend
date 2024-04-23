@@ -1,0 +1,96 @@
+@startuml
+
+!theme cerulean
+
+skinparam backgroundColor #FFFFFF
+
+box "Cập nhật thông tin thuật toán" #White
+	actor "Quản trị viên" as user
+	participant frm_TrangChu as homepage
+	participant frm_QuanLyThuatToan as algorithm_management
+	participant frm_SuaThuatToan as update_algorithm
+	participant ctrl_ThuatToan as ctrl_algorithm
+	participant ent_ThuatToan as ent_algorithm
+
+	user -> homepage: Thực hiện "Đăng nhập" và chọn "Quản lý thuật toán"
+
+	activate user
+
+	activate homepage
+
+	homepage -> algorithm_management: create
+
+	activate algorithm_management
+
+	deactivate homepage
+
+	algorithm_management --> user: Hiển thị giao diện và yêu cầu chọn tính năng
+
+	user -> algorithm_management: Chọn "Cập nhật thông tin thuật toán"
+
+	algorithm_management -> update_algorithm: create
+
+	deactivate algorithm_management
+
+	deactivate user
+
+	activate update_algorithm
+
+	update_algorithm -> ctrl_algorithm: Lấy danh sách thuật toán
+
+	activate ctrl_algorithm
+
+	ctrl_algorithm -> ent_algorithm: Lấy danh sách thuật toán
+
+	activate ent_algorithm
+
+	ent_algorithm -> ent_algorithm: Lấy danh sách thuật toán từ CSDL
+	
+	activate ent_algorithm
+
+	ent_algorithm --> ctrl_algorithm: Trả về danh sách thuật toán
+
+	ctrl_algorithm --> update_algorithm: Trả về danh sách thuật toán
+
+	deactivate ctrl_algorithm
+
+	update_algorithm --> user: Hiển thị danh sách thuật toán và yêu cầu chọn thuật toán để cập nhật
+	
+	activate user
+
+	user -> update_algorithm: Chọn thuật toán, bấm "Cập nhật" và nhập thông tin cập nhật cho thuật toán
+
+	deactivate user
+
+	update_algorithm -> ctrl_algorithm: Cập nhật thông tin thuật toán(Thông tin thuật toán mới)
+
+	activate ctrl_algorithm
+
+	ctrl_algorithm -> ent_algorithm: Cập nhật thông tin thuật toán(Thông tin thuật toán mới)
+
+	ent_algorithm -> ent_algorithm: Lưu thông tin thuật toán mới vào CSDL(Thông tin thuật toán mới)
+
+	activate ent_algorithm
+
+	ent_algorithm --> ctrl_algorithm: Cập nhật thông tin thuật toán thành công
+
+	deactivate update_algorithm
+
+	ctrl_algorithm --> algorithm_management: Cập nhật thông tin thuật toán thành công
+
+	activate algorithm_management
+
+	algorithm_management --> user: Cập nhật thông tin thuật toán thành công
+
+	activate user
+
+	deactivate user
+
+	deactivate ctrl_algorithm
+
+	deactivate algorithm_management
+
+	deactivate algorithm_management
+end box
+
+@enduml

@@ -1,0 +1,60 @@
+@startuml
+
+!theme cerulean
+
+skinparam backgroundColor #FFFFFF
+
+box "Xem đánh giá" #White
+	actor "Quản trị viên/Người dùng" as user
+	participant frm_TrangChu as homepage
+	participant frm_DanhGia as rate
+	participant ctrl_ThuatToan as ctrl_algorithm
+	participant ent_ThuatToan as ent_algorithm
+
+	user -> homepage: Thực hiện "Đăng nhập" và chọn thuật toán để xem danh sách đánh giá
+
+	activate homepage
+
+	activate user
+
+	homepage -> rate: create(Thuật toán)
+	
+	activate rate
+
+	deactivate homepage
+
+	rate -> ctrl_algorithm: Lấy danh sách đánh giá(Thuật toán)
+
+	activate ctrl_algorithm
+
+	ctrl_algorithm -> ent_algorithm: Lấy danh sách đánh giá(Đánh giá)
+
+	activate ent_algorithm
+
+	ent_algorithm -> ent_algorithm: Lấy danh sách đánh giá từ CSDL(Thuật toán, Đánh giá)
+	
+	activate ent_algorithm
+
+	ent_algorithm --> ctrl_algorithm: Trả về danh sách đánh giá
+
+	ctrl_algorithm --> rate: Trả về danh sách đánh giá
+
+	rate --> user: Hiển thị danh sách đánh giá của thuật toán
+
+	deactivate ent_algorithm
+
+	deactivate ent_algorithm
+
+	deactivate ctrl_algorithm
+
+	deactivate user
+	
+	deactivate rate
+
+	deactivate homepage
+end box
+
+@enduml
+
+
+

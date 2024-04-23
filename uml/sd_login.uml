@@ -1,0 +1,84 @@
+@startuml
+!theme cerulean
+
+skinparam backgroundColor #FFFFFF
+
+box "Đăng nhập tài khoản" #White
+	actor "Quản trị viên/Người dùng" as user
+	participant frm_TrangChu as homepage
+	participant frm_DangNhap as frm_Login
+	participant ctrl_TaiKhoan as ctrl_user
+	participant ent_TaiKhoan as ent_user
+
+	/' Action 1: Press 'Login' button '/
+	
+	user -> homepage: Bấm "Đăng nhập" trên trang chủ
+	activate user
+	activate homepage
+
+	deactivate user
+
+	homepage -> frm_Login: create
+	activate frm_Login
+	deactivate frm_Login
+
+	deactivate homepage
+
+	frm_Login --> user: Yêu cầu nhập thông tin đăng nhập(tài khoản, mật khẩu)
+	activate frm_Login
+	activate user
+
+	user -> frm_Login: Nhập tài khoản và mật khẩu và bấm nút "Đăng nhập"
+	
+	frm_Login -> ctrl_user: Yêu cầu đăng nhập(tên đăng nhập, mật khẩu)
+	activate ctrl_user
+
+	ctrl_user -> ent_user: Yêu cầu đăng nhập(tên đăng nhập, mật khẩu)
+	activate ent_user
+
+	ent_user -> ent_user: Kiểm tra thông tin(tên đăng nhập, mật khẩu)
+	activate ent_user
+
+	box "Kiểm tra thông tin" #White
+		alt NO
+			ent_user --> ctrl_user: Thông tin đăng nhập không chính xác hoặc không tồn tại
+
+			ctrl_user --> frm_Login: Thông tin đăng nhập không chính xác hoặc không tồn tại
+
+			frm_Login --> user: Hiển thị lỗi "Thông tin đăng nhập không chính xác hoặc không tồn tại"
+
+			deactivate frm_Login
+		else YES
+			ent_user -> ent_user: Lưu vào CSDL nhật kí hoạt động(action, UserID, datetime)
+			activate ent_user
+
+			ent_user -> ent_user: Lưu cookie vào trình duyệt(UserID, thông tin đăng nhập)
+
+			ent_user --> ctrl_user: Đăng nhập thành công(UserID)
+
+			ctrl_user --> homepage: Hiển thị trang chủ sau khi đăng nhập thành công
+			activate homepage
+
+			homepage --> user: Hiển thị trang chủ cho người dùng sau khi đăng nhập thành công
+
+			deactivate homepage
+
+			deactivate ent_user
+		end
+	end box
+
+	deactivate frm_Login
+
+        deactivate ctrl_user
+
+        deactivate ent_user
+
+        deactivate ent_user
+
+        deactivate frm_Login
+
+        deactivate user
+
+end box
+
+@enduml

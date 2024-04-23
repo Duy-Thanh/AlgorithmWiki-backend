@@ -1,0 +1,72 @@
+@startuml
+!theme cerulean
+
+skinparam backgroundColor #FFFFFF
+
+box "Đăng xuất tài khoản" #White
+	actor "Người dùng/Quản trị viên" as user
+	participant frm_TrangChu as homepage
+	participant ctrl_TaiKhoan as ctrl_user
+	participant ent_TaiKhoan as ent_user
+	
+	user -> homepage: Bấm "Đăng xuất"
+
+	activate homepage
+	activate user
+
+	homepage --> user: Yêu cầu xác nhận đăng xuất tài khoản
+
+	deactivate user
+	deactivate homepage
+	
+	box "Xác nhận" #White
+		alt NO
+			homepage -> homepage: Quay lại trang chủ mà không đăng xuất tài khoản
+			activate homepage
+			deactivate homepage
+		else YES
+			homepage -> ctrl_user: Yêu cầu đăng xuất(User_ID)
+			activate homepage
+			activate ctrl_user
+
+			ctrl_user -> ent_user: Yêu cầu đăng xuất(User_ID)
+			activate ent_user
+
+			deactivate homepage
+			deactivate ctrl_user
+		
+			ent_user -> ent_user: Lưu vào CSDL nhật ký hoạt động(action, datetime, userID)
+		
+			activate ent_user
+			deactivate ent_user
+
+			ent_user --> ctrl_user: Đăng xuất thành công
+			activate ctrl_user
+
+			deactivate ent_user
+
+			ctrl_user --> homepage: Đăng xuất thành công
+			activate homepage
+
+			deactivate ctrl_user
+
+			homepage --> user: Thông báo đăng xuất thành công
+			activate user
+			
+			user -> homepage: Bấm "Xác nhận và quay lại trang chủ"
+
+			deactivate user
+
+			homepage -> homepage: Quay lại trang chủ
+			activate homepage
+			deactivate homepage
+
+			deactivate homepage
+		end
+	end box
+end box
+
+@enduml
+
+
+

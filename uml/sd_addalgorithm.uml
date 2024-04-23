@@ -1,0 +1,124 @@
+@startuml
+
+!theme cerulean
+
+skinparam backgroundColor #FFFFFF
+
+box "Thêm thuật toán mới" #White
+	actor "Quản trị viên" as user
+	participant frm_TrangChu as homepage
+	participant frm_QuanLyThuatToan as algorithm_management
+	participant frm_ThemThuatToan as add_algorithm
+	participant ctrl_ThuatToan as ctrl_algorithm
+	participant ent_ThuatToan as ent_algorithm
+
+	user -> homepage: Thực hiện "Đăng nhập" và chọn "Quản lý thuật toán"
+
+	activate user
+
+	activate homepage
+
+	homepage -> algorithm_management: create
+
+	activate algorithm_management
+
+	deactivate algorithm_management
+
+	deactivate homepage
+
+	algorithm_management --> user: Hiển thị giao diện và yêu cầu chọn tính năng
+
+	activate algorithm_management
+
+	user -> algorithm_management: Bấm "Thêm thuật toán"
+
+	algorithm_management -> add_algorithm: create
+
+	activate add_algorithm
+
+	deactivate add_algorithm
+
+	deactivate algorithm_management
+
+	deactivate user
+
+	add_algorithm --> user: Hiển thị giao diện và yêu cầu nhập thông tin
+	
+	activate user
+
+	deactivate user
+
+	activate add_algorithm
+
+	deactivate add_algorithm
+
+	user -> add_algorithm: Nhập thông tin thuật toán mới
+
+	activate add_algorithm
+
+	activate user
+
+	add_algorithm -> ctrl_algorithm: Yêu cầu thêm thuật toán mới(Thông tin thuật toán mới)
+
+	activate ctrl_algorithm
+
+	deactivate add_algorithm
+
+	ctrl_algorithm -> ent_algorithm: Yêu cầu thêm thuật toán mới(Thông tin thuật toán mới)
+
+	activate ent_algorithm
+
+	ent_algorithm -> ent_algorithm: Kiểm tra thuật toán tồn tại hay chưa(Thông tin thuật toán mới)
+
+	alt NO
+		ent_algorithm -> ent_algorithm: Thêm thuật toán vào CSDL(Thông tin thuật toán mới)
+
+		activate ent_algorithm
+
+		ent_algorithm --> ctrl_algorithm: Thêm thuật toán mới thành công
+
+		ctrl_algorithm --> algorithm_management: Thêm thuật toán mới thành công
+
+		activate algorithm_management
+
+		algorithm_management --> user: Hiển thị thông báo thêm thuật toán mới thành công
+
+		deactivate algorithm_management
+
+		deactivate ent_algorithm
+
+		deactivate ent_algorithm
+
+		deactivate ctrl_algorithm
+
+		deactivate user
+
+		deactivate add_algorithm
+	else YES
+		ent_algorithm --> ctrl_algorithm: Thuật toán đã tồn tại
+
+		activate ent_algorithm
+
+		activate ctrl_algorithm
+
+		ctrl_algorithm --> algorithm_management: Thuật toán đã tồn tại
+
+		activate algorithm_management
+
+		algorithm_management --> user: Lỗi thuật toán đã tồn tại
+
+		activate user
+
+		deactivate user
+
+		deactivate algorithm_management
+
+		deactivate ctrl_algorithm
+
+		deactivate ent_algorithm
+	end
+end box
+
+@enduml
+
+

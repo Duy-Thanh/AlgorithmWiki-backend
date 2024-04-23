@@ -1,0 +1,56 @@
+@startuml
+
+!theme cerulean
+
+skinparam backgroundColor #FFFFFF
+
+box "Xem danh sách tài khoản" #White
+	actor "Quản trị viên" as user
+	participant frm_TrangQuanTri as management
+	participant frm_QuanLyTaiKhoan as account_management
+	participant ctrl_TaiKhoan as ctrl_user
+	participant ent_TaiKhoan as ent_user
+
+	user -> management: Quản trị viên thực hiện "Đăng nhập" để truy cập trang quản trị, sau đó chọn chức năng  "Quản lí tài khoản"
+	activate user
+
+	activate management
+
+	management -> account_management: create
+
+	activate account_management
+
+	account_management -> ctrl_user: Lấy danh sách tài khoản
+
+	activate ctrl_user
+
+	ctrl_user -> ent_user: Lấy danh sách tài khoản
+
+	activate ent_user
+
+	ent_user -> ent_user: Lấy danh sách tài khoản từ CSDL
+
+	activate ent_user
+
+	ent_user --> ctrl_user: Trả về danh sách tài khoản
+
+	ctrl_user --> account_management: Trả về danh sách tài khoản
+
+	account_management --> user: Hiển thị danh sách tài khoản cho quản trị viên
+
+	deactivate account_management
+
+	deactivate ent_user
+
+	deactivate ent_user
+
+	deactivate ctrl_user
+
+	deactivate management
+
+	deactivate user
+end box
+
+@enduml
+
+
