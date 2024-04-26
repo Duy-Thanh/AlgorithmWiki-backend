@@ -9,10 +9,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 @RestController
 public class Default {
-    @GetMapping("/Default")
+    @GetMapping("/api/Default")
     public String getDefault() throws JsonProcessingException {
         // Create object
-        ErrorObject defaultObject = new ErrorObject(500, "API Endpoint not accepted GET method");
+        ErrorObject defaultObject = new ErrorObject(200, "Hello World");
         
         String JSON = JSONHelper.toJSON(defaultObject);
 

@@ -40,13 +40,13 @@ public class Status {
         if (!details) {
             statusObject.setMessage("server_pressure_status");
             statusObject.setValue(demandLevel);
-            statusObject.setStatusCode(200);
+            statusObject.setStatusCode("200");
         } else {
             String details_value = "CPU Usage: " + cpuUsagePercentage + "%, RAM Usage: " + ramUsagePercentage + "%, Demand Level: " + demandLevel;
 
             statusObject.setMessage("server_pressure_status_details");
             statusObject.setValue(details_value);
-            statusObject.setStatusCode(200);
+            statusObject.setStatusCode("200");
         }
 
         systemMetricsService = null;
