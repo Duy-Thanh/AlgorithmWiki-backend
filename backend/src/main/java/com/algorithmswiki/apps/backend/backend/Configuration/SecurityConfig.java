@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -12,12 +13,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeRequests()
-                .anyRequest().permitAll() // Permit all requests
-                .and()
             .csrf().disable() // Disable CSRF protection (optional, depending on your needs)
-            .formLogin().disable() // Disable form login
-            .httpBasic().disable(); // Disable HTTP Basic authentication
+            .authorizeRequests()
+                .requestMatchers("/api", "/api/status", "/api/login").permitAll() // Permit all requests to /api and /api/status
+                .requestMatchers("/api/**").authenticated() // Require authentication for all other /api endpoints
+            .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         return http.build();
     }
