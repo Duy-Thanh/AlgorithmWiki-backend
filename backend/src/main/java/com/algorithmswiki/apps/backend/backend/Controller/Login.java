@@ -21,7 +21,7 @@ public class Login {
         boolean isValid = customSQLService.validateUser(username, password);
 
         if (isValid) {
-            LoginObject loginObject = new LoginObject(JWTTokenGenerator.createJwtToken(username, password, "AlgorithmDictionary_BackendSecretKey123@!@"), 200);
+            LoginObject loginObject = new LoginObject(JWTTokenGenerator.createJwtToken(username, password, "AlgorithmDictionary_BackendSecretKey123@!@"), null, 200);
             
             return JSONHelper.toJSON(loginObject).toString();
         } else {
