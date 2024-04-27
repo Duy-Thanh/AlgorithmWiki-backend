@@ -17,11 +17,6 @@ var portServer = "8080";
  */
 const fullServer = `http://${serverName}:${portServer}`;
 
-const backend_endpoints = [
-    "/api",
-    "/api/status"
-];
-
 //
 // PRIVATE FUNCTION SECTION
 // DO NOT USE. USE PUBLIC FUNCTION SECTION IN YOUR HTML INSTEAD
@@ -176,5 +171,23 @@ const API_status_with_details = async () => {
         console.error(`Error: ${error}`);
 
         return "";
+    }
+}
+
+/**
+ * API_status() - Show the server resources and server pressure that measured in advanced form
+ * 
+ * @param {boolean}: triggers return details server resources and server pressure
+ *                           or not
+ * @description Show the server resources measured in advanced form
+ * 
+ * @return {Promise<string>}: Return the server pressure state: 'minimal', 'normal', 'medium' and 'high'
+ */
+
+const API_status = async (details) => {
+    if (!details) {
+        API_status_non_details();
+    } else {
+        API_status_with_details();
     }
 }
