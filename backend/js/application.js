@@ -191,3 +191,53 @@ const API_status = async (details) => {
         API_status_with_details();
     }
 }
+
+/**
+ * getCookie() - Get saved cookie
+ * 
+ * @param {String}: Name
+ * 
+ * @return {String}: cookie
+ */
+
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length == 2) return parts.pop().split(';').shift();
+}
+
+/**
+ * API_login() - Login user
+ * 
+ * @param {String, String}: Username and Password
+ * 
+ * @description: Login the user
+ */
+const API_login = async (user, pass) => {
+    const endpoint = "/api/login";
+    var queryParams = { username: user, password: pass };
+    if (username == null || password == null) {
+        alert("Username and Password must not be null. Please fill all the fields and try again");
+    } else {
+        try {
+            var responseData = await getRequest(endpoint, queryParams);
+
+            try {
+                var { error, statusCode, accessToken } = responseData;
+
+                if (error != null || statusCode != 200) {
+                    alert("Login failed because the server doesn't responding. Please try again");
+                } else {
+                    document.cookie = `access_token=${accessToken}; path=/; max-age=${60 * 60};`;
+                    window.location.href = "index.html?login_succeeded=true";
+                }
+            } catch {
+                const { errorCode, errorDetails } = responseData;
+
+                alert(`Login failed. Reason: ${errorDetails}.\n\nError code: ${errorCode}`);
+            }
+        } catch (error) {
+            alert(`Login failed. Error: ${error}`);
+        }
+    }
+}
