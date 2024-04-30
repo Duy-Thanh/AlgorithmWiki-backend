@@ -11,21 +11,12 @@ public class JWTTokenGenerator {
     private static final String SECRET_KEY = "AlgorithmDictionary_BackendSecretKey123@!@";
 
     public static String createJwtToken(String username, String password) throws Exception {
-        // Map<String, Object> header = new HashMap<>();
-        // header.put("alg", "HS512");
-        // header.put("typ", "JWT");
         JWTHeader header = new JWTHeader("JWT", "HS512");
         String json = JSONHelper.toJSON(header).toString();
         String encodedHeader = Base64.getUrlEncoder().withoutPadding().encodeToString(json.toString().getBytes());
 
-        System.out.println("Header JSON: " + json);
-        System.out.println("Encoded header: " + encodedHeader);
-
-        // Step 2: Create the Payload
-        // Map<String, Object> payload = new HashMap<>();
-        // payload.put("sub", username);
-        // payload.put("iat", System.currentTimeMillis());
-        // payload.put("exp", System.currentTimeMillis() / 1000L + 3600); // 1 hour
+        // System.out.println("Header JSON: " + json);
+        // System.out.println("Encoded header: " + encodedHeader);
 
         JWTTokenObject tokenPayload = new JWTTokenObject(username, System.currentTimeMillis(), System.currentTimeMillis() / 1000L + 3600);
 
