@@ -37,4 +37,3 @@ CREATE TABLE Category (
     ID_algorithms INT,
     FOREIGN KEY (ID_algorithms) REFERENCES Algorithms(ID)
 );
-

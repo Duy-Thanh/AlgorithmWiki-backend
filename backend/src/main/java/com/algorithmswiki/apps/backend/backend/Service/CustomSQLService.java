@@ -27,11 +27,59 @@ public class CustomSQLService {
     public boolean registerUser(String username, String password, 
                                 String fullName, String email, 
                                 String permission) {
-        String reg_sql = "INSERT INTO UserAccount(username, userpass, fullName, email, permission) VALUES (?, ?, ?, ?, ?)";
+        try {
+            String reg_sql = "INSERT INTO UserAccount(username, userpass, fullName, email, permission) VALUES (?, ?, ?, ?, ?)";
 
-        int rowAffected = jdbcTemplate.update(reg_sql, username, password, fullName, email, permission);
+            int rowAffected = jdbcTemplate.update(reg_sql, username, password, fullName, email, permission);
+    
+            return rowAffected > 0;    
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return false;
+        }
+    }
 
-        return rowAffected > 0;
+    public Integer getUserIdByUsername(String username) {
+        String query = "SELECT ID FROM UserAccount WHERE username = ?";
+        try {
+            Integer userId = jdbcTemplate.queryForObject(query, new Object[]{username}, Integer.class);
+        
+            return userId;    
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return 0;
+        }
+    }
+
+    public String getFullNameByUsername(String username) {
+        try {
+            String query = "SELECT fullName FROM UserAccount WHERE username = ?";
+            String fullName = jdbcTemplate.queryForObject(query, new Object[]{username}, String.class);
+
+            return fullName;
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return "";
+        }
+    }
+
+    public String getEmailByUsername(String username) {
+        try {
+            String query = "SELECT email FROM UserAccount WHERE username = ?";
+            String email = jdbcTemplate.queryForObject(query, new Object[]{username}, String.class);
+
+            return email;
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return "";
+        }
+    }
+
+    public String getPermissionByUsername(String username) {
+        try {
+            String query = "SELECT permission FROM UserAccount WHERE username = ?";
+            String permission = jdbcTemplate.queryForObject(query, new Object[]{username}, String.class);
+
+            return permission;
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return "";
+        }
     }
 }
 

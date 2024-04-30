@@ -5,18 +5,18 @@ import java.util.*;
 import javax.crypto.*;
 import javax.crypto.spec.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.algorithmswiki.apps.backend.backend.Object.JWTTokenObject;
 
 public class JWTUtil {
     private static final String SECRET_KEY = "AlgorithmDictionary_BackendSecretKey123@!@";
 
     private static String createSignature(String encodedHeader, String encodedPayload) throws Exception {
         String message = encodedHeader + "." + encodedPayload;
-        Mac sha512_MAC = Mac.getInstance("HmacSHA512");
-        SecretKeySpec secretKeySpec = new SecretKeySpec(SECRET_KEY.getBytes(), "HmacSHA512");
-        sha512_MAC.init(secretKeySpec);
+        Mac sha512_HMAC = Mac.getInstance("HmacSHA512");
+        SecretKeySpec secret_key = new SecretKeySpec(SECRET_KEY.getBytes(), "HmacSHA512");
+        sha512_HMAC.init(secret_key);
 
-        byte[] signatureBytes = sha512_MAC.doFinal(message.getBytes());
+        byte[] signatureBytes = sha512_HMAC.doFinal(message.getBytes());
         return Base64.getUrlEncoder().withoutPadding().encodeToString(signatureBytes);
     }
 
@@ -33,6 +33,8 @@ public class JWTUtil {
 
             // Re-compute the signature
             String signature = createSignature(parts[0], parts[1]);
+
+            // System.out.println("Signature: " + signature);
 
             // Compare the computed signature with the signature of the access_token
             return signature.equals(parts[2]);
@@ -54,14 +56,20 @@ public class JWTUtil {
                 }
 
                 String payloadJson = new String(Base64.getUrlDecoder().decode(parts[1]));
-
+                // System.out.println("Payload JSON: " + payloadJson);
+                
+                JWTTokenObject payload = JSONHelper.fromJSON(payloadJson, JWTTokenObject.class);
+                // System.out.println("Output: " + payload);
+                
                 // Parse the payload
-                ObjectMapper objectMapper = new ObjectMapper();
-                Map<String, Object> payloadMap = objectMapper.readValue(payloadJson, Map.class);
-                return (String) payloadMap.get("sub");
+                // ObjectMapper objectMapper = new ObjectMapper();
+                // Map<String, Object> payloadMap = objectMapper.readValue(payloadJson, Map.class);
+                // return (String) payloadMap.get("sub");
+
+                return (String)payload.getSub();
             }
         } catch (Exception e) {
-            return "Cannot retrieve neccessary information. Due to security reason, you are prohibited to continue your action.";
+            return "Cannot retrieve neccessary information. Due to security reason, you are prohibited to continue your action. Error details: " + e.getLocalizedMessage();
         }
     }
 }

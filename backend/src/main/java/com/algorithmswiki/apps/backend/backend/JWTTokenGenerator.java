@@ -2,36 +2,51 @@ package com.algorithmswiki.apps.backend.backend;
 
 import java.util.*;
 import javax.crypto.*;
-import javax.crypto.spec.SecretKeySpec;
+import javax.crypto.spec.*;
+
+import com.algorithmswiki.apps.backend.backend.Object.JWTHeader;
+import com.algorithmswiki.apps.backend.backend.Object.JWTTokenObject;
 
 public class JWTTokenGenerator {
-    public static String createJwtToken(String username, String password, String secretKey) throws Exception {
-        Map<String, Object> header = new HashMap<>();
-        header.put("alg", "HS512");
-        header.put("typ", "JWT");
-        String encodedHeader = Base64.getUrlEncoder().withoutPadding().encodeToString(header.toString().getBytes());
+    private static final String SECRET_KEY = "AlgorithmDictionary_BackendSecretKey123@!@";
+
+    public static String createJwtToken(String username, String password) throws Exception {
+        // Map<String, Object> header = new HashMap<>();
+        // header.put("alg", "HS512");
+        // header.put("typ", "JWT");
+        JWTHeader header = new JWTHeader("JWT", "HS512");
+        String json = JSONHelper.toJSON(header).toString();
+        String encodedHeader = Base64.getUrlEncoder().withoutPadding().encodeToString(json.toString().getBytes());
+
+        System.out.println("Header JSON: " + json);
+        System.out.println("Encoded header: " + encodedHeader);
 
         // Step 2: Create the Payload
-        Map<String, Object> payload = new HashMap<>();
-        payload.put("sub", username);
-        payload.put("iat", new Date().getTime());
-        payload.put("exp", new Date().getTime() + 3600000); // 1 hour
-        String encodedPayload = Base64.getUrlEncoder().withoutPadding().encodeToString(payload.toString().getBytes());
+        // Map<String, Object> payload = new HashMap<>();
+        // payload.put("sub", username);
+        // payload.put("iat", System.currentTimeMillis());
+        // payload.put("exp", System.currentTimeMillis() / 1000L + 3600); // 1 hour
+
+        JWTTokenObject tokenPayload = new JWTTokenObject(username, System.currentTimeMillis(), System.currentTimeMillis() / 1000L + 3600);
+
+        String payloadJSON = JSONHelper.toJSON(tokenPayload).toString();
+        String encodedPayload = Base64.getUrlEncoder().withoutPadding().encodeToString(payloadJSON.getBytes());
 
         // Step 3: Sign the Token
-        String signature = createSignature(encodedHeader, encodedPayload, secretKey);
+        String signature = createSignature(encodedHeader, encodedPayload);
 
         // Step 4: Encode the Token
         return encodedHeader + "." + encodedPayload + "." + signature;
     }
 
-    private static String createSignature(String encodedHeader, String encodedPayload, String secretKey) throws Exception {
+    private static String createSignature(String encodedHeader, String encodedPayload) throws Exception {
         String message = encodedHeader + "." + encodedPayload;
         Mac sha512_HMAC = Mac.getInstance("HmacSHA512");
-        SecretKeySpec secret_key = new SecretKeySpec(secretKey.getBytes(), "HmacSHA512");
+        SecretKeySpec secret_key = new SecretKeySpec(SECRET_KEY.getBytes(), "HmacSHA512");
         sha512_HMAC.init(secret_key);
 
         byte[] signatureBytes = sha512_HMAC.doFinal(message.getBytes());
+        System.out.println("JWTTokenGen: " + Base64.getUrlEncoder().withoutPadding().encodeToString(signatureBytes));
         return Base64.getUrlEncoder().withoutPadding().encodeToString(signatureBytes);
     }
 }

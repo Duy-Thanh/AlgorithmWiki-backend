@@ -22,7 +22,7 @@ public class Register {
                            @RequestParam String fullname, @RequestParam String email) throws JsonProcessingException {
         boolean validateEmail = EmailValidator.isValidEmail(email);
         if (!validateEmail) {
-            ErrorObject errorObject = new ErrorObject(500, "Your email entered is not corrected format");
+            ErrorObject errorObject = new ErrorObject(403, "Your email entered is not corrected format");
 
             return JSONHelper.toJSON(errorObject).toString();
         }

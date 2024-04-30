@@ -15,8 +15,7 @@ public class SecurityConfig {
         http
             .csrf().disable() // Disable CSRF protection (optional, depending on your needs)
             .authorizeRequests()
-                .requestMatchers("/api", "/api/status", "/api/login").permitAll() // Permit all requests to /api and /api/status
-                .requestMatchers("/api/**").authenticated() // Require authentication for all other /api endpoints
+                .requestMatchers("/api/**").permitAll() // Require authentication for all other /api endpoints
             .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

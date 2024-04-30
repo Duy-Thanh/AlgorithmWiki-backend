@@ -12,7 +12,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public ResponseEntity<Object> handleAllExceptions(Exception ex) throws JsonProcessingException {
@@ -28,8 +27,9 @@ public class GlobalExceptionHandler {
         String parameterName = ex.getParameterName();
         String errorMessage = "Parameter " + parameterName + " is required";
 
-        ErrorObject errorObject = new ErrorObject(500, errorMessage);
+        ErrorObject errorObject = new ErrorObject(403, errorMessage);
 
-        return new ResponseEntity<>(JSONHelper.toJSON(errorObject).toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(JSONHelper.toJSON(errorObject).toString(), HttpStatus.BAD_REQUEST);
     }
 }
+
