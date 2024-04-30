@@ -15,9 +15,6 @@ public class JWTTokenGenerator {
         String json = JSONHelper.toJSON(header).toString();
         String encodedHeader = Base64.getUrlEncoder().withoutPadding().encodeToString(json.toString().getBytes());
 
-        // System.out.println("Header JSON: " + json);
-        // System.out.println("Encoded header: " + encodedHeader);
-
         JWTTokenObject tokenPayload = new JWTTokenObject(username, System.currentTimeMillis(), System.currentTimeMillis() / 1000L + 3600);
 
         String payloadJSON = JSONHelper.toJSON(tokenPayload).toString();
@@ -37,7 +34,6 @@ public class JWTTokenGenerator {
         sha512_HMAC.init(secret_key);
 
         byte[] signatureBytes = sha512_HMAC.doFinal(message.getBytes());
-        System.out.println("JWTTokenGen: " + Base64.getUrlEncoder().withoutPadding().encodeToString(signatureBytes));
         return Base64.getUrlEncoder().withoutPadding().encodeToString(signatureBytes);
     }
 }
