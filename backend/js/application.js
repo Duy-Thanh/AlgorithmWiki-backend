@@ -46,12 +46,15 @@ async function getRequest(endpoint, queryParams = {}) {
         console.error(`Error: ${error}`);
     }
 }
+
+//
 // ===================================
 // END PRIVATE FUNCTION SECTION
 // ===================================
 
 // PUBLIC FUNCTION SECTION
 // USE THESE FUNCTIONS FROM HERE!!!
+//
 
 /**
  * API_index() - Check the API if API is working
@@ -201,9 +204,111 @@ const API_status = async (details) => {
  */
 
 function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length == 2) return parts.pop().split(';').shift();
+    const cookieArray = document.cookie.split(';'); // Split the cookie string into an array of "name=value" strings
+
+    // Loop through the array to find the cookie with the specified name
+    for (let i = 0; i < cookieArray.length; i++) {
+        const cookie = cookieArray[i];
+        const cookiePair = cookie.split('='); // Split the "name=value" string into a name and value
+
+        // Trim any leading or trailing whitespace from the name
+        const cookieName = cookiePair[0].trim();
+
+        // If the name matches the one we're looking for, return the value
+        if (cookieName === name) {
+            return decodeURIComponent(cookiePair[1]); // Decode the value to handle special characters
+        }
+    }
+
+    // If the cookie was not found, return null
+    return null;
+}
+
+/**
+ * API_get_login_status() - Get login status
+ * 
+ * @param None
+ * 
+ * @return {boolean}
+ */
+
+const API_get_login_status = async() => {
+    return getCookie("access_token") == null;
+}
+
+/**
+ * API_register() - Register a new user
+ * 
+ * @param {String}: Username, password, fullname, email, permission
+ * 
+ * @return None
+ */
+
+const API_register = async (user, pass, full_name, user_email) => {
+    const endpoint = "/api/register";
+    const queryParams = { username: user, password: pass, fullname: full_name, email: user_email };
+
+    try {
+        const responseData = await getRequest(endpoint, queryParams);
+
+        if (responseData.error || responseData.errorDetails) {
+            alert(`${responseData.errorDetails}`);
+            window.location.href = "/register";
+            return;
+        } else {
+            const { status, statusCode } = responseData;
+
+            if (status == "succeeded" && statusCode == 200) {
+                alert("Create new account successfully. You can use new credentials to login");
+                window.location.href = "/login";
+                return;
+            }
+        }
+    }
+    catch (error) {
+        console.error(`Error: ${error}`);
+    }
+}
+
+/**
+ * API_getCurrentUser() - Get details of the current user
+ * 
+ * @param {String}: access_token
+ * 
+ * @return None
+ */
+const API_getCurrentUser = async () => {
+    const endpoint = "/api/get_current_user";
+
+    try {
+        var responseData = await getRequest(endpoint);
+
+        try {
+            const { email, permission, id, status, username, fullname } = responseData;
+
+            if (status == "false") {
+                return {
+                    email,
+                    permission,
+                    id,
+                    status,
+                    username,
+                    fullname
+                };
+            } else {
+                return null;
+            }
+        } catch {
+            const { errorCode, errorDetails } = responseData;
+
+            alert(`${errorDetails}.\n\nError code: ${errorCode}`);
+
+            return null;
+        }
+    } catch (error) {
+        console.error(`Error: ${error}`);
+        return null;
+    }
 }
 
 /**
@@ -216,28 +321,91 @@ function getCookie(name) {
 const API_login = async (user, pass) => {
     const endpoint = "/api/login";
     var queryParams = { username: user, password: pass };
-    if (username == null || password == null) {
+
+    if (user == null || pass == null) {
         alert("Username and Password must not be null. Please fill all the fields and try again");
+        window.document.location = "";
     } else {
         try {
             var responseData = await getRequest(endpoint, queryParams);
+            // Check if the response contains an error or errorDetails to handle login failure
+            if (responseData.error || responseData.errorDetails) {
+                // Handle login failure
+                alert(`Login failed. Reason: ${responseData.errorDetails || 'Unknown error'}`);
+                window.location.href = "/login";
+            } else {
+                // Handle successful login
+                var { statusCode, accessToken } = responseData;
 
-            try {
-                var { error, statusCode, accessToken } = responseData;
-
-                if (error != null || statusCode != 200) {
-                    alert("Login failed because the server doesn't responding. Please try again");
-                } else {
-                    document.cookie = `access_token=${accessToken}; path=/; max-age=${60 * 60};`;
-                    window.location.href = "index.html?login_succeeded=true";
-                }
-            } catch {
-                const { errorCode, errorDetails } = responseData;
-
-                alert(`Login failed. Reason: ${errorDetails}.\n\nError code: ${errorCode}`);
+                console.log(statusCode);
+                
+                API_getCurrentUser()
+                    .then(userDetails => {
+                        if (userDetails) {
+                            console.log(`User details: ${JSON.stringify(userDetails)}`);
+                            return JSON.stringify(userDetails);
+                        } else {
+                            console.log(`${JSON.stringify(userDetails)}`);
+                            return JSON.stringify(userDetails);
+                        }
+                    })
+                    .catch(error => {
+                        alert(`Error when login. You will be logged out. Error:\n\n${error}`);
+                        window.location.href = "/login";
+                    });
             }
         } catch (error) {
-            alert(`Login failed. Error: ${error}`);
+            console.error(`${error}`);
         }
+    }
+}
+
+/**
+ * API_DisplayAlgorithms() - Display algorithms
+ * 
+ * @param None
+ * 
+ * @return None
+ */
+const API_DisplayAlgorithms = async () => {
+    const endpoint = "/api/get_algorithms";
+
+    try {
+        var responseData = await getRequest(endpoint);
+
+        try {
+            console.log(responseData);
+            return responseData;
+        } catch {
+            const { errorCode, errorDetails } = responseData;
+
+            alert(`${errorCode} - ${errorDetails}`);
+        }
+    } catch (error) {
+        alert(`${error}`);
+    }
+}
+
+/**
+ * API_logout()
+ * 
+ * @param None
+ * 
+ * @return None
+ */
+const API_logout = async () => {
+    const endpoint = "/api/logout";
+    
+    try {
+        var responseData = await getRequest(endpoint);
+
+        const { status, errorCode } = responseData;
+
+        if (status == "succeeded" && errorCode == 200) {
+            alert("Logout completed. You need to login to use the application");
+            window.location.href = "/";
+        }
+    } catch (error) {
+        console.error(`${error}`);
     }
 }
