@@ -6,15 +6,17 @@ public class AccountObject {
     private String fullName;
     private String email;
     private String permission;
+    private String isDeletedOrDeactivated;
 
     public AccountObject() { }
 
-    public AccountObject(Integer Id, String username, String fullName, String email, String permission) {
+    public AccountObject(Integer Id, String username, String fullName, String email, String permission, String isDeletedOrDeactivated) {
         this.Id = Id;
         this.username = username;
         this.fullName = fullName;
         this.email = email;
         this.permission = permission;
+        this.isDeletedOrDeactivated = isDeletedOrDeactivated;
     }
 
     // Getters and Setters
@@ -38,6 +40,10 @@ public class AccountObject {
         return permission;
     }
 
+    public String getStatus() {
+        return isDeletedOrDeactivated;
+    }
+
     public void setId(Integer id) {
         this.Id = id;
     }
@@ -56,5 +62,9 @@ public class AccountObject {
 
     public void setPermission(String permission) {
         this.permission = permission;
+    }
+
+    public void setStatus(String status) {
+        this.isDeletedOrDeactivated = status;
     }
 }

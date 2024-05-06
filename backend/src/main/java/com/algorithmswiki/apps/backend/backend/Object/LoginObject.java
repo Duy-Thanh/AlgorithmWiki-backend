@@ -1,11 +1,20 @@
 package com.algorithmswiki.apps.backend.backend.Object;
 
 public class LoginObject {
+    private static LoginObject instance;
     private String access_token;
     private int status_code;
     private String error;
 
-    public LoginObject() { }
+    private LoginObject() { }
+
+    public static synchronized LoginObject getInstance() {
+        if (instance == null) {
+            instance = new LoginObject();
+        }
+
+        return instance;
+    }
 
     public LoginObject(String access_token, String error, int status_code) {
         this.access_token = access_token;

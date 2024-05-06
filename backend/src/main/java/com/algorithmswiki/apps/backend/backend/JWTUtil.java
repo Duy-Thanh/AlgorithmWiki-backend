@@ -34,8 +34,6 @@ public class JWTUtil {
             // Re-compute the signature
             String signature = createSignature(parts[0], parts[1]);
 
-            // System.out.println("Signature: " + signature);
-
             // Compare the computed signature with the signature of the access_token
             return signature.equals(parts[2]);
         } catch (Exception e) {
@@ -56,16 +54,8 @@ public class JWTUtil {
                 }
 
                 String payloadJson = new String(Base64.getUrlDecoder().decode(parts[1]));
-                // System.out.println("Payload JSON: " + payloadJson);
-                
                 JWTTokenObject payload = JSONHelper.fromJSON(payloadJson, JWTTokenObject.class);
-                // System.out.println("Output: " + payload);
                 
-                // Parse the payload
-                // ObjectMapper objectMapper = new ObjectMapper();
-                // Map<String, Object> payloadMap = objectMapper.readValue(payloadJson, Map.class);
-                // return (String) payloadMap.get("sub");
-
                 return (String)payload.getSub();
             }
         } catch (Exception e) {

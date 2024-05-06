@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algorithmswiki.apps.backend.backend.JSONHelper;
 import com.algorithmswiki.apps.backend.backend.JWTTokenGenerator;
+import com.algorithmswiki.apps.backend.backend.UserCredentials;
 import com.algorithmswiki.apps.backend.backend.Object.ErrorObject;
 import com.algorithmswiki.apps.backend.backend.Object.LoginObject;
 import com.algorithmswiki.apps.backend.backend.Service.CustomSQLService;
@@ -21,7 +22,13 @@ public class Login {
         boolean isValid = customSQLService.validateUser(username, password);
 
         if (isValid) {
-            LoginObject loginObject = new LoginObject(JWTTokenGenerator.createJwtToken(username, password), null, 200);
+            LoginObject loginObject = LoginObject.getInstance();
+            loginObject.setAccessToken(JWTTokenGenerator.createJwtToken(username, password));
+            loginObject.setError(null);
+            loginObject.setStatusCode(200);
+
+            UserCredentials cred = UserCredentials.getInstance();
+            cred.setRevokedStatus(loginObject.getAccessToken(), false);
             
             return JSONHelper.toJSON(loginObject).toString();
         } else {

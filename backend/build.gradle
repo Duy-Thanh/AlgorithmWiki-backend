@@ -38,7 +38,7 @@ dependencies {
 	implementation "jakarta.xml.bind:jakarta.xml.bind-api:4.0.2"
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-log4j2'
-	implementation 'commons-codec:commons-codec:1.15'
+	// implementation 'commons-codec:commons-codec:1.15'
 	runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.mysql:mysql-connector-j'
@@ -56,7 +56,7 @@ compileJava {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'com.algorithmswiki.apps.backend.backend.BackendApplication'
+            'Main-Class': 'com.algorithmswiki.apps.backend.backend.BackendApplication'
         )
     }
     from {
